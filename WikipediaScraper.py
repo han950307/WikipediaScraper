@@ -155,8 +155,17 @@ class WikipediaScraper(Scraper):
         # Get the first url
         cites = el("cite")
         if cites:
+            ind = 0
             unquoted = urllib2.unquote(re.sub(r"<.*?>", "", cites[0].content))
             beautified = BeautifulSoup(unquoted, 'html.parser').contents[0]
+
+            # Sometimes it chooses "Category:token" so want to avoid that.
+            while re.search(r"category\:" + token.split()[0], beautified, re.I):
+                ind += 1
+                if ind >= len(cites):
+                    break
+                unquoted = urllib2.unquote(re.sub(r"<.*?>", "", cites[ind].content))
+                beautified = BeautifulSoup(unquoted, 'html.parser').contents[0]
             return beautified
         else:
             print "No URLs found on Google Search"
@@ -236,7 +245,7 @@ class WikipediaScraper(Scraper):
         if not hard_mode:
             token += " Simple English Wikipedia"
         else:
-            token += "Wikipedia"
+            token += " Wikipedia"
 
         url = self.get_first_url_from_google(token)
         self.extract_info_from_wiki_url(url)
