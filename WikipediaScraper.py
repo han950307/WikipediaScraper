@@ -87,9 +87,20 @@ class WikipediaScraper(Scraper):
         """
         prints the next paragraph from the wikipedia.
         """
-        if self.cur_ind < len(self.contents):
-            print re.sub(r"<.*?>", "", self.contents[self.cur_ind].content)
-            self.cur_ind += 1
+        content_str = ""
+
+        # until we find an acutal content, keep going.
+        while not content_str:
+            if self.cur_ind < len(self.contents):
+                content_str = re.sub(r"<.*?>", "", self.contents[self.cur_ind].content)
+                content_str = content_str.strip()
+                self.cur_ind += 1
+            else:
+                print "Reached end of document"
+                return
+
+        if content_str:
+            print content_str
 
     def search(self, token, hard_mode=False):
         """
