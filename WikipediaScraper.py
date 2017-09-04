@@ -215,7 +215,7 @@ class WikipediaScraper(Scraper):
         if content_str:
             self.print_text(content_str)
 
-    def search(self, token, hard_mode=False):
+    def search(self, token, hard_mode=True):
         """
         Scrapes simple wikipedia summary. If hard_mode=True, searches
         normal wikipedia summary.
@@ -236,8 +236,8 @@ class WikipediaScraper(Scraper):
         self.extract_info_from_wiki_url(url)
         self.next()
 
-    def search_hard(self, token):
+    def search_easy(self, token):
         """
         same as search but just using hard mode
         """
-        self.search(token, True)
+        self.search(token, False)
