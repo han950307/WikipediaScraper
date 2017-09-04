@@ -6,8 +6,13 @@ import shlex
 import struct
 import platform
 import subprocess
+import warnings
 
+from bs4 import BeautifulSoup
 from pattern.web import Element
+
+
+warnings.filterwarnings("ignore", category=UserWarning, module='bs4')
 
 
 class TerminalSizeGetter(object):
@@ -147,11 +152,12 @@ class WikipediaScraper(Scraper):
 
         # make it into an element
         el = self.convert_html_to_element(web)
-
         # Get the first url
         cites = el("cite")
         if cites:
-            return urllib2.unquote(re.sub(r"<.*?>", "", cites[0].content))
+            unquoted = urllib2.unquote(re.sub(r"<.*?>", "", cites[0].content))
+            beautified = BeautifulSoup(unquoted, 'html.parser').contents[0]
+            return beautified
         else:
             print "No URLs found on Google Search"
             return ""
