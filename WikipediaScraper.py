@@ -159,13 +159,20 @@ class WikipediaScraper(Scraper):
             unquoted = urllib2.unquote(re.sub(r"<.*?>", "", cites[0].content))
             beautified = BeautifulSoup(unquoted, 'html.parser').contents[0]
 
-            # Sometimes it chooses "Category:token" so want to avoid that.
-            while re.search(r"category\:" + token.split()[0], beautified, re.I):
+            is_wikipedia = re.search("wikipedia", beautified, re.I)
+            is_article = not re.search(r"category\:" + token.split()[0], beautified, re.I)
+
+            # we want it to be wikipedia
+            while not (is_wikipedia and is_article):
                 ind += 1
                 if ind >= len(cites):
-                    break
+                    print "No Wikipedia URLs found on Google Search"
+                    return ""
                 unquoted = urllib2.unquote(re.sub(r"<.*?>", "", cites[ind].content))
                 beautified = BeautifulSoup(unquoted, 'html.parser').contents[0]
+                is_wikipedia = re.search("wikipedia", beautified, re.I)
+                is_article = not re.search(r"category\:" + token.split()[0], beautified, re.I)
+
             return beautified
         else:
             print "No URLs found on Google Search"
