@@ -112,8 +112,8 @@ class WikipediaScraper(Scraper):
         self.extract_info_from_wiki_url(url)
         self.next()
 
-    def s(self, token, hard_mode=False):
+    def search_hard(self, token):
         """
-        Wrapper function for search to make it faster to search
+        same as search but just using hard mode
         """
-        self.search(token, hard_mode)
+        self.search(token, True)
