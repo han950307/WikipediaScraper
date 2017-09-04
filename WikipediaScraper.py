@@ -107,6 +107,13 @@ class Scraper(object):
         r = requests.get(url)
         return r.content
 
+    def clean_html(self, html):
+        """
+        Cleans html stuff
+        """
+        s = BeautifulSoup(html, 'html.parser')
+        return s.prettify()
+
     def convert_html_to_element(self, page_html):
         """
         converts html to Element object
