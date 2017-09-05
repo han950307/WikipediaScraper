@@ -180,7 +180,7 @@ class WikipediaScraper(Scraper):
                 is_wikipedia = re.search("wikipedia", beautified, re.I)
                 is_article = not re.search(r"category\:" + token.split()[0], beautified, re.I)
 
-            return beautified
+            return self.format_url(beautified)
         else:
             print "No URLs found on Google Search"
             return ""
@@ -189,7 +189,6 @@ class WikipediaScraper(Scraper):
         """
         returns the summary portion from the wikipedia url
         """
-        url = self.format_url(url)
         web = self.scrape_page(url)
         el = self.convert_html_to_element(web)
         contents = el(".mw-parser-output > p")
@@ -262,7 +261,9 @@ class WikipediaScraper(Scraper):
             token += " Wikipedia"
 
         url = self.get_first_url_from_google(token)
+        self.url = url
         self.extract_info_from_wiki_url(url)
+        print url + "\n"
         self.next()
 
     def search_easy(self, token):
